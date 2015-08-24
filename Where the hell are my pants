@@ -1,0 +1,333 @@
+/* Text adventure game by Mark Walsh and Oisin Greaney for CT-103 Programming
+
+The main objective of this game is to collect all items in the room in order to complete the game.
+
+*** You Wake up in your room after a long weekend of partying hard and debauchery.
+only to find out that you are late for your monday morning lecture. 
+The Game will contiue with you waking up to the sound of the letter box ****
+
+*/
+#include "stdafx.h"
+#include "stdio.h"
+#include "string.h"
+#include <stdlib.h> 
+
+//function must be called first of declared
+
+int menu();
+void dresser();
+void floor();
+void wardrobe();
+void bed();
+void displayScore();//displays your current score
+void inventory();
+void gameOver(); //game over screen for when all items have been found
+void scoreHeader();
+bool game = false;
+bool klp = false; // int for keys phone laptop
+bool s = false; //int for shoes
+bool c = false; // int for clothes
+bool ch = false;//int charger
+int choice = 0;//defining menu counter
+int score = 0;//int for tracking your score. +10 for every item found, -5 if you try to go back to the same place
+int moves = 0;
+double time = 18;
+
+/*in this main function the first introduction will be displayed.
+upon runnig fo rthe first time the intro will no longer be displayed and the further menu will always be called.*/
+
+void main()
+{
+	int start = 0; // counter to skip the intorduction once the first itteration has been done.
+	//int choice; // choice used for the menu choice.
+	do // do once
+	{
+		// print statement will only be called once.
+		printf ("\n\t\tMark Walsh and Oisin Greaney proudly present\n\t"
+			"------------------------------------------------------------\n\t\t\t"
+			"WHERE THE HELL ARE MY PANTS?\n\t\t\t"
+			"An interactive text adventure\n\t"
+			"------------------------------------------------------------\n\n\t"
+			"You wake to the rattle of the letter box downstairs\n\t"
+			"Barely opening one eye you look at the clock on your dresser \n\n\t\t\t\t10:18AM \n\n\t"
+			"You jump out of bed\n\t"
+			"Today is the day you have to demo your programming project\n\t"
+			"And of course you've managed to sleep through your alarm\n\t"
+			"You now have to get ready for college\n\t"
+			"The items you will need are:\n\n"
+			"1:Your clothes\n"
+			"2:Your shoes\n"
+			"3:Your phone\n"
+			"4:Your keys\n"
+			"6:Your Laptop\n\n");
+
+
+		start++;// increment start to stop the loop
+	}
+	while(start =0); // while start == 0
+	menu(); 
+}
+/* main menu is seperate.
+having this function called at the end of each function other function will allow a new direction to be made.
+the choice is then passed into the main function to allow the next function to be called.*/
+
+int menu()
+{
+	if(score<0)
+	{
+		score=0;
+	}
+
+	if (klp&&s&&ch&&c)
+	{
+		game++;//once all the above statements are true it will only then incre
+	}
+
+	if(game)//if the combined values of the counters to check if item has been found
+	{
+		gameOver();//run gameOver function
+	}
+
+	else if(time>=25)
+	{
+		gameOver();//run gameOver function
+	}
+
+
+	else if(!game)
+	{
+	
+		scoreHeader();// print the score
+		printf("To continue Please Enter a choice from the following\n"
+			"1: Look on the Dresser\n"
+			"2: Look on the Floor\n"
+			"3: Look in the Wardrobe\n"
+			"4: Look under the bed\n"
+			"5: Inventory\n"// inventory function with the return to menu at the end. print the text file or someting less complex
+			"0: Quit\n"
+			"Option: ");
+		fflush(stdin);// flush the choice just incase
+		scanf ("%d",&choice);
+		
+		do
+		{
+			system("CLS");
+			if (choice == 1) dresser();
+			if (choice == 2) floor();
+			if (choice == 3) wardrobe();
+			if (choice == 4) bed();
+			if (choice == 5) inventory();// print file. text file or something 
+		}
+
+		while(choice =0);
+}
+return 0;// if it is 0, exit
+}
+
+
+/* the following functions for finding the items on the list. 
+as each one if called it will enter into the loop and write to file. 
+this can later be called upon to recall what you have picked up on the way. */
+
+void dresser() // function dresser include new menu and counters to increment items found of need to be discovered.
+{
+	if (!klp)
+	{ 
+		
+		printf("\nGreat all your stuff is everywhere.\nnice you've just got your Keys Laptop and Phone, \nBut your phone is dead better find your charger. \nGet a move on or you'll be late!\n\n\n");
+		//print to file, save as inventory.
+		FILE * pFile; 
+		pFile = fopen ( "inventory.txt" , "a+" ); // opening in append mode to add to the txt file.  rather then rewriting over the whole file
+		fputs ( "\nYou have your Laptop, Phone and Keys.\n " , pFile ); // update the txt file
+		fclose ( pFile );
+		klp++;
+		score=(score+10);
+		moves++;
+		time=(time+0.5);
+	}
+	else
+	{
+		
+		printf("\nYou have already looked here!\n\n\n");
+		score=(score-5);
+		moves++;
+		time=(time+0.5);
+	}
+
+	menu();// return to menu by calling the menu function.
+}
+/* The following function allows the file to be wirtten with the new items that are found   */ 
+void floor() // same as dressr function
+{
+	if (!s)
+	{ 
+		
+		printf("\nGreat you have found your shoes. \nGet a move on or you'll be late!\n\n\n");
+		//print to file, save as inventory.
+		FILE * pFile; 
+		pFile = fopen ( "inventory.txt" , "a+" ); 
+		fputs ( "you have your shoes.\n " , pFile );
+		fclose ( pFile );
+		s++;
+		score=(score+10);
+		moves++;
+		time=(time+0.5);
+	}
+	else
+	{
+		
+		printf("\nYou have already looked here!\n\n\n");
+		score=(score-5);
+		moves++;
+		time=(time+0.5);
+	}
+
+	menu();// return to menu by calling the menu function.
+}
+
+void wardrobe()
+{
+	if (!c)
+	{ 
+		
+		printf("\nGreat you're dressed. \n\n\n");
+		//print to file, save as inventory.
+		FILE * pFile; 
+		pFile = fopen ( "inventory.txt" , "a+" ); 
+		fputs ( "You're dressed\n" , pFile );
+		fclose ( pFile );
+		c++;
+		score=(score+10);
+		moves++;
+		time=(time+0.5);
+	}
+	else
+	{
+		
+		printf("\nYou're already dressed!\nStop Wasting time. \n\n");
+		score=(score-5);
+		moves++;
+		time=(time+0.5);
+	}
+
+	menu(); // return to menu by calling the menu function.
+}
+
+void bed()
+{
+	if (!ch)
+	{ 
+	
+		printf("\nGreat you have found your charger. \n\n\n");
+		//print to file, save as inventory.
+		FILE * pFile; 
+		pFile = fopen ( "inventory.txt" , "a+" ); 
+		fputs ( "\nYou have your chager. " , pFile );
+		fclose ( pFile );
+		ch++;
+		score=(score+10);
+		moves++;
+		time=(time+0.5);
+	}
+	else
+	{
+		
+		printf("\nYou have already looked here!\nhave you tried the rest of the room? \n\n\n");
+		score=(score-5);
+		moves++;
+		time=(time+0.5);
+	}
+
+	menu();// return to menu by calling the menu function.
+}
+
+void scoreHeader()
+{
+	
+	if(moves%2==0)
+	{
+		printf("\n\n\t\t\t\t\t\tMoves: %d Current Score: %d\n\n\t\t\tThe clock reads 10:%.0fAM\n\n", moves, score, time);
+	}
+	else
+	{
+		printf("\n\n\t\t\t\t\t\tMoves: %d Current Score: %d\n\n", moves, score);
+	}
+
+}
+
+void inventory()
+{
+	if(moves==0)
+	{
+		printf("\t sorry you have not found anything yet! \n\t I think you should start looking before it's too late");
+		menu();
+	}
+	else
+	{
+		char t[100];//string of 100 charectors for the file to printed into 
+
+		FILE *fptr;
+
+		fptr = fopen("inventory.txt", "r");// open the file tis will be the local directory
+
+		while (!feof(fptr))// wile not at the end of the file 
+		{
+		fgets(t, 80, fptr); //get the charectors and print to screen
+		puts(t);
+		}
+		fclose(fptr);// close the file
+		menu();// return to menu
+		
+	}
+}
+
+void gameOver()//when all items found, print game over screen with score
+{
+	system("CLS"); //clear the screen to print out the finishing statrement
+	remove("inventory.txt");// the inventory can now be removed because the game is now finished
+
+	if(time>=26)
+	{
+		printf("\n\nIt's too late. The clock display glares at you accusingly\n\n\t\t\t\t10:26AM\n\n"
+		"There's no way you'll make it in on time now\n\n"
+		"Well... at least you tried. There's always JobBridge...\n\n");
+
+		printf("Your final score is: %d of a possible 40 in %d moves\n\n", score, moves);
+		printf("Better luck next time!\n\n");
+		printf("Thanks for playing!\n\n");
+
+	}
+
+	
+	
+	if(game)
+	{
+		printf("\n\nA WINNER IS YOU!!\n\n");
+		printf("Your final score is: %d of a possible 40\n\n", score);// will give you your final score.
+	
+	
+		if(score<=10)
+		{
+			printf("Well... at least you tried. There's always JobBridge...\n\n");
+		}
+		else if(score<=20)
+		{
+			printf("Better luck next time!\n\n");
+		}
+		else if(score<=30)
+		{
+			printf("Nice try! Next time aim for a perfect score!\n\n");
+		}
+		else if(score<40)
+		{
+			printf("Ooh, so close!\n\n");
+		}
+		else if (score=40)
+		{
+			printf("Great job! That career guidance counsellor was wrong after all, you ARE college material!\n\n");
+		}
+
+	}
+	system("pause");
+
+}
